@@ -166,3 +166,7 @@ const logNumber:(i: number) => void = (i: number) =>{
     ```
 
 18. inference 和 annotation 相比，inference 更常用。
+
+5/31:
+
+1. typeScript basic.
