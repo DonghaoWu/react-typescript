@@ -170,3 +170,5 @@ const logNumber:(i: number) => void = (i: number) =>{
 5/31:
 
 1. typeScript basic.
+
+6/1:
