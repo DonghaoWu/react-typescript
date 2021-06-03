@@ -172,3 +172,5 @@ const logNumber:(i: number) => void = (i: number) =>{
 1. typeScript basic.
 
 6/1:
+
+1. enviroment set up: VS Code
