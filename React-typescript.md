@@ -162,7 +162,7 @@ const logNumber:(i: number) => void = (i: number) =>{
     ```ts
     // let inference guess what the type is.
 
-    const color = 'red'
+    const color = 'red';
     ```
 
 18. inference 和 annotation 相比，inference 更常用。
@@ -174,3 +174,20 @@ const logNumber:(i: number) => void = (i: number) =>{
 6/1:
 
 1. enviroment set up: VS Code
+
+6/3:
+
+1. type annotations & type inference
+
+2. when to use annotations:
+    - function that returns the 'any' type
+```js
+const json = {'x':10, 'y':20};
+const cordinates = JSON.parse(json);
+
+console.log(coordinates);
+```
+
+6/4:
+
+1. 
