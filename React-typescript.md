@@ -191,3 +191,331 @@ console.log(coordinates);
 6/4:
 
 1. 
+
+6/5:
+- 以下是关于使用 annotation 的场景。
+1. Fix the 'Any' type.
+- JSON.parse canr return any data type.
+```js
+const json = {'x':10, 'y':20};
+const cordinates:{x:number;y:number} = JSON.parse(json);
+
+console.log(coordinates);
+```
+
+2. Delayed initialization
+- when we declare a variabel on one line and initalizate it later.
+```js
+let words = ['red', 'green','blue'];
+// let foundWord = false;
+let foundWord:boolean;
+
+for(let i = 0; i < words.length; i++){
+    if(words[i] === 'green'){
+        foundWord = true;
+    }
+}
+```
+
+- 最好的办法是直接定义为 false，这样 typeScript 就直接知道定义的数据类型。
+
+3. WHen inference doesn't work
+- variable whose type cannot be inferrend correctly.
+```js
+let numbers =[-10, -1, 12];
+// if one number is positve, set the number, if not, set false, bad practise.
+// this will get error
+let numberAboveZero = false;
+// fix case
+let numberAboveZero: boolean | number = false;
+
+for(let i = 0; i M numbers.length; i++){
+    if(number[i] > 0){
+        numberAboveZero = numbers[i];
+    }
+}
+```
+
+4. function - type annotation for functions.
+
+```js
+const logNumber:(i:number) =>void = (i: number)=>{
+    console.log(i);
+};
+```
+
+- `always add argument type.`
+```js
+// type annotation
+// best parctise, always add return annotation.
+const add = (a:number, b: number) : number =>{
+    return a + b;
+}
+
+// bad practise
+const add = (a:number, b: number) =>{
+    return a + b;
+}
+```
+
+```js
+function divide(a: number, b: number): number{
+    return a/b;
+}
+
+const mutiply = function(a:number, b:number): number{
+    return a * b;
+}
+```
+
+```js
+const logger = (message:string): void =>{
+    console.log(message);
+    return null;
+}
+
+const throwError = (message:string): never =>{
+    throw new Error(message);
+}
+```
+
+```js
+const forcast = {
+    date:new Date(),
+    weather:'sunny'
+}
+
+const logWeather = (forcast:{ date: Date, weather:string}):void =>{
+    console.log(forcast.date);
+    console.log(forcast.weather);
+}
+
+logWeather(forcast);
+
+// typeScript destructuring
+const logWeather = ({date, weather} :{date: Date, weather:string}): void =>{
+    console.log(date);
+    console.log(weather);
+}
+```
+
+- type infernce for functions - typeScript tries to figure out what type of `value a function will return.`
+
+
+- Annotation around Objects
+
+```js
+const profile={
+    name:'alex',
+    age:20,
+    coords:{
+        lat:0,
+        lng:15
+    },
+    setAge(age: number): void{
+        this.age = age;
+    }
+};
+
+const {age}:{age:number} = profile;
+
+const {age, name}:{age:number; name:string} = profile;
+
+const {coords:{lat, lng}}:{coords:{lat:number; lng:number}} = profile;
+```
+
+5. array in TyprScript
+
+```js
+// annotation 一般用在未有值的定义层面上
+const carMakers: string[] = [];
+const carMakers = ['ford', 'toyota', 'chevy'];
+
+const dates = [new Date(), new Date()];
+
+// annotation 一般用在未有值的定义层面上
+const carsByMake: string[][] = [];
+const carsByMake = [
+    ['f150'],
+    ['corolla'],
+    ['camaro']
+]
+```
+
+- why typeScript in array
+```js
+// Help with inference when extractiong values
+const car = carMakers[0];
+const myCar = carMakers.pop();
+
+// Prevent incompatible values
+carMakers.push(100);
+
+// Help with 'map'
+carMakers.map((car:string):string =>{
+    return car;
+})
+
+// Mutiple types in array
+const importantDates :(Date | string)[] = [];
+importantDates.push('2021');
+const importantDates = [new Date(), '2020'];
+```
+
+- when to use types Arrays
+```js
+
+```
+
+6. tuples in action, set up the type order in an array.
+```js
+const drink = {
+    color:'brown',
+    carbonated: true,
+    sugar:40
+}
+
+const pepsi:[string, boolean, number] = ['brown', true, 40];
+
+// best practise
+type Drink = [string, boolean, number];
+const pepsi:Drink = ['brown', true, 40];
+```
+
+- why tuples?( not used too often.)
+```js
+const car :[number, number] =[400, 401];
+
+const catStates = {
+    horsepower:400;,
+    weight:401
+}
+```
+
+7. interfaces, `not inference`
+- interfaces + classes
+- how we get really strong code reuse in TS
+- long type annotations
+
+```js
+const oldCivic = {
+    name:'civic',
+    year:2000,
+    broken:true
+};
+
+const printVehicle = (vehicle: { name: string; year:number; broken:boolean}):void =>{
+    console.log(`Name:${vehicle.name}`);
+}
+
+printVehicle(oldCivic);
+```
+
+```js
+interface Vehicle{
+    name:string;
+    year:number;
+    broken:boolean;
+}
+
+const oldCivic = {
+    name:'civic',
+    year:2000,
+    broken:true
+};
+
+const printVehicle = (vehicle: Vehicle):void =>{
+    console.log(`Name:${vehicle.name}`);
+}
+
+printVehicle(oldCivic);
+```
+
+- interface 的意思大概就是采用自己定制的数据类型，以供重复使用。
+
+- interface syntax
+
+```js
+interface Vehicle{
+    name:string;
+    year:number;
+    broken:boolean;
+    summary():string;
+}
+
+const oldCivic = {
+    name:'civic',
+    year:2000,
+    broken:true,
+    summary():string{
+        return `${this.name}`;
+    }
+};
+
+const printVehicle = (vehicle: Vehicle):void =>{
+    console.log(vehicle.summary());
+};
+
+printVehicle(oldCivic);
+```
+
+- functions in interfaces / 输入的 Vehicle 没有全部 key, 这样 printVehicle 的输入 object 只需要符合就可以了。`部分合规也是允许的。`
+
+```js
+interface Reportable{
+    summary():string;
+}
+
+const oldCivic = {
+    name:'civic',
+    year:2000,
+    broken:true,
+    summary():string{
+        return `${this.name}`;
+    }
+};
+
+const printVehicle = (vehicle: Reportable):void =>{
+    console.log(vehicle.summary());
+};
+
+printVehicle(oldCivic);
+```
+
+- code reuse with interfaces.
+
+```js
+interface Reportable{
+    summary():string;
+}
+
+const oldCivic = {
+    name:'civic',
+    year:2000,
+    broken:true,
+    summary():string{
+        return `${this.name}`;
+    }
+};
+
+const drink = {
+    color:'brown',
+    carbonated:true,
+    sugar:40,
+    summary():string{
+        return `My drink has ${this.sugar} grams of sugar.`;
+    }
+}
+
+const printSummary = (item: Reportable):void =>{
+    console.log(item.summary());
+};
+
+printSummary(oldCivic);
+printSummary(drink);
+```
+
+- general plan with interfaces
+```js
+// reuse interface.
+```
