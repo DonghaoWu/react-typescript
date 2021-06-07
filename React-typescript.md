@@ -519,3 +519,611 @@ printSummary(drink);
 ```js
 // reuse interface.
 ```
+
+8. classes
+- class, blueprint to create an object
+
+- public / private / protected.`modifier`
+
+```js
+class Vehicle{
+    private drive():void{
+        console.log('hello');
+    }
+
+    protected honk():void{
+        console.log('world')
+    }
+}
+
+class Car extends Vehicle{
+    // private for security, just could be called inside the class
+    private driveCar():void{
+        console.log('ka ka');
+    }
+
+    public startDrivingPricess():void{
+        this.dirveCar();
+        // protected, could be called in the child class
+        this.honk();
+    }
+}
+
+const vehicle = new Vehicle();
+vehicle.drive();
+
+const car = new Car();
+car.drive();
+```
+
+- fields in classes
+
+```js
+class Vehicle{
+    color:string
+
+    constructor(color:string){
+        this.color = color;
+    }
+
+    //shortcut
+    constructor(public color:string){}
+
+    protected honk():void{
+        console.log('world')
+    }
+}
+
+const vehicle = new Vehicle('orange');
+console.log(vehicle.color);
+```
+
+- fields with inheritance
+```js
+class Vehicle{
+    //shortcut
+    constructor(public color:string){}
+
+    protected honk():void{
+        console.log('world')
+    }
+}
+
+const vehicle = new Vehicle('orange');
+console.log(vehicle.color);
+
+class Car extends Vehicle{
+    constructor(public wheels:number, color:string){
+        super(color);
+    }
+
+    private drive():void{
+        console.log('vroom');
+    }
+    public startDrivingPricess():void{
+        this.honk();
+    }
+}
+
+const car = new Car(4,'red');
+```
+
+9. application
+
+```bash
+$ npm install -g parcel-bundler
+$ mkdir maps
+$ cd maps
+$ 
+```
+
+- index.html
+```html
+<html>
+    <body>
+        <script src='./src/index.ts'></script>
+    </body>
+</html>
+```
+
+- src folder/index.ts
+```js
+console.log('hello world');
+```
+
+- build command
+```bash
+$ parcel index.html
+```
+
+- open localhost:1234
+
+- project structure
+```diff
++ src/index.ts
++ index.html
++ src/User.ts
++ src/Company.ts
++ src/CustomMap.ts
+```
+
+- install faker
+```bash
+$ npm i faker @types/faker
+```
+
+- src/User.ts
+```js
+//Type definition file
+import faker from 'faker';
+
+// never use default export
+export class User{
+    name:string;
+    location:{
+        lat:number;
+        lng:number;
+    }
+
+    constructor(){
+        this.name = faker.name.firstName();
+        this.location = {
+            lat:parseFloat(faker.address.latitude()),
+            lng:parseFloat(faker.address.longitude())
+        };
+    }
+}
+```
+
+- src/Company.ts
+```js
+import faker from 'faker';
+
+export class Company{
+    companyName:string;
+    catchPhrase:string;
+    location:{
+        lat:number;
+        lng:number;
+    }
+
+    constructor(){
+        this.companyName = faker.company.companyName();
+        this.catchPhrase = faker.company.catchPhrase();
+
+        this.location = {
+            lat:parseFloat(faker.address.latitude()),
+            lng:parseFloat(faker.address.longitude())
+        };
+    }
+}
+```
+
+- src/index.ts
+```js
+import { User } from './User';
+import {COmpany} from './Company';
+
+const user = new User();
+console.log(user);
+
+const company = new Company();
+console.log(company);
+```
+
+
+- src/Map.js
+1. generate a google dev project
+2. enable google Maps support(`Maps JS API`)
+3. Generate an API key(credentials => API keys)
+4. Add the google maps script to HTML file
+
+- index.html
+```html
+<html>
+    <body>
+        <script src="https:maps.googlapis.com/maps/api/js?key=adadfhaldkadsfj"></script>
+        <script src='./src/index.ts'></script>
+    </body>
+</html>
+```
+
+- google maps integration with typeScript
+
+```bash
+$ npm i @types/googlemaps
+```
+
+- src/index.ts
+```js
+import { User } from './User';
+import {Company} from './Company';
+
+const user = new User();
+console.log(user);
+
+const company = new Company();
+console.log(company);
+
+google
+```
+
+6/6:
+
+1. type defination files
+
+- index.html
+```html
+<html>
+    <body>
+        <div id='map' style='height:100%;'></div>
+        <script src="https:maps.googlapis.com/maps/api/js?key=adadfhaldkadsfj"></script>
+        <script src='./src/index.ts'></script>
+    </body>
+</html>
+```
+
+- src/index.ts
+```js
+new google.maps.Map(document.getElementById('map'),{
+    zoom:1,
+    center:{
+        lat:0,
+        lng:0
+    }
+});
+```
+
+2. hide functionality
+
+- src/CustomMap.ts
+```js
+export class CustomMap{
+    private googleMap:google.maps.Map;
+
+    constructor(idvId:string){
+        this.googleMap = new google.maps.Map(document.getElementById(divId),{
+            zoom:1,
+            center:{
+                lat:0,
+                lng:0
+            }
+        });
+    }
+}
+```
+
+- src/index.ts
+```js
+import { User } from './User';
+import {Company} from './Company';
+import {customMap} from './CustomMap.ts';
+
+new CustomMap('map');
+```
+
+3. adding markers
+
+```js
+import { User } from './User';
+import {Company} from './Company';
+
+export class CustomMap{
+    private googleMap:google.maps.Map;
+
+    constructor(divId:string){
+        this.googleMap = new google.maps.Map(document.getElementById(divId),{
+            zoom:1,
+            center:{
+                lat:0,
+                lng:0
+            }
+        });
+    }
+
+    addUserMarker(user: User): void{
+        new google.maps.Marker({
+            map:this.googleMap,
+            position:{
+                lat:user.location.lat,
+                lng:user.location.lng
+            }
+        })
+    };
+
+    addCompanyMarker(company: Company): void{
+        new google.maps.Marker({
+            map:this.googleMap,
+            position:{
+                lat:company.location.lat,
+                lng:company.location.lng
+            }
+        })
+    };
+}
+```
+
+- src/index.ts
+```js
+import { User } from './User';
+import {Company} from './Company';
+import {customMap} from './CustomMap.ts';
+
+const user = new User();
+const company = new Company();
+const customMap = new CustomMap('map');
+
+customMap.addUserMarker(user);
+customMap.addUserMarker(company);
+```
+
+4. duplicate code.`iginore`
+
+```js
+import { User } from './User';
+import {Company} from './Company';
+
+export class CustomMap{
+    private googleMap:google.maps.Map;
+
+    constructor(divId:string){
+        this.googleMap = new google.maps.Map(document.getElementById(divId),{
+            zoom:1,
+            center:{
+                lat:0,
+                lng:0
+            }
+        });
+    }
+
+    addUserMarker(mappable: User | Company): void{
+        new google.maps.Marker({
+            map:this.googleMap,
+            position:{
+                lat:mappable.location.lat,
+                lng:mappable.location.lng
+            }
+        })
+    };
+}
+```
+
+5. restricting access with interfaces
+```js
+// Instructions to every other class
+// on how they can be an argument to 'addMarker'
+interface Mappable{
+    location:{
+        lat:number;
+        lng:number;
+    };
+}
+
+export class CustomMap{
+    private googleMap:google.maps.Map;
+
+    constructor(divId:string){
+        this.googleMap = new google.maps.Map(document.getElementById(divId),{
+            zoom:1,
+            center:{
+                lat:0,
+                lng:0
+            }
+        });
+    }
+
+    addMarker(mappable: Mappable): void{
+        new google.maps.Marker({
+            map:this.googleMap,
+            position:{
+                lat:mappable.location.lat,
+                lng:mappable.location.lng
+            }
+        })
+    };
+}
+```
+- new terms: `satisfy the interface.`
+- implicit type checks
+
+- src/index.ts
+
+```js
+import { User } from './User';
+import {Company} from './Company';
+import {customMap} from './CustomMap.ts';
+
+const user = new User();
+const company = new Company();
+const customMap = new CustomMap('map');
+
+customMap.addMarker(user);
+customMap.addMarker(company);
+```
+
+6. showing popup windows
+
+```js
+interface Mappable{
+    location:{
+        lat:number;
+        lng:number;
+    };
+}
+
+export class CustomMap{
+    private googleMap:google.maps.Map;
+
+    constructor(divId:string){
+        this.googleMap = new google.maps.Map(document.getElementById(divId),{
+            zoom:1,
+            center:{
+                lat:0,
+                lng:0
+            }
+        });
+    }
+
+    addMarker(mappable: Mappable): void{
+        const marker = new google.maps.Marker({
+            map:this.googleMap,
+            position:{
+                lat:mappable.location.lat,
+                lng:mappable.location.lng
+            }
+        })
+
+        marker.addListener('click',()=>{
+            const infoWindow = new google.maps.InfoWindow({
+                content:'Hi there!'
+            });
+
+            infoWindow.open(this.googleMap, marker);
+        })
+    };
+}
+```
+
+7. updating interface definitions
+
+- CustomMap.js
+```js
+interface Mappable{
+    location:{
+        lat:number;
+        lng:number;
+    };
+    markerContent():string;
+}
+
+export class CustomMap{
+    private googleMap:google.maps.Map;
+
+    constructor(divId:string){
+        this.googleMap = new google.maps.Map(document.getElementById(divId),{
+            zoom:1,
+            center:{
+                lat:0,
+                lng:0
+            }
+        });
+    }
+
+    addMarker(mappable: Mappable): void{
+        const marker = new google.maps.Marker({
+            map:this.googleMap,
+            position:{
+                lat:mappable.location.lat,
+                lng:mappable.location.lng
+            }
+        })
+
+        marker.addListener('click',()=>{
+            const infoWindow = new google.maps.InfoWindow({
+                content:mappable.markerContent()
+            });
+
+            infoWindow.open(this.googleMap, marker);
+        })
+    };
+}
+```
+
+- User.ts
+```js
+//Type definition file
+import faker from 'faker';
+
+// never use default export
+export class User{
+    name:string;
+    location:{
+        lat:number;
+        lng:number;
+    }
+
+    constructor(){
+        this.name = faker.name.firstName();
+        this.location = {
+            lat:parseFloat(faker.address.latitude()),
+            lng:parseFloat(faker.address.longitude())
+        };
+    }
+
+    markerContent():string{
+        return `User name: ${this.name}`;
+    }
+}
+```
+
+- Company.ts
+```js
+import faker from 'faker';
+
+export class Company{
+    companyName:string;
+    catchPhrase:string;
+    location:{
+        lat:number;
+        lng:number;
+    }
+
+    constructor(){
+        this.companyName = faker.company.companyName();
+        this.catchPhrase = faker.company.catchPhrase();
+
+        this.location = {
+            lat:parseFloat(faker.address.latitude()),
+            lng:parseFloat(faker.address.longitude())
+        };
+    }
+
+    markerContent():string{
+        return `
+        <div>
+            <h1>Company name: ${this.companyName}</h1>
+        </div>
+        `;
+    };
+}
+```
+
+8. Optional inplements clauses
+```js
+export interface Mappable{
+    location:{
+        lat:number;
+        lng:number;
+    };
+    markerContent():string;
+}
+```
+
+```js
+import {Mappable} from './CustomMap';
+
+export class User implements Mappable{
+    name:string;
+    location:{
+        lat:number;
+        lng:number;
+    }
+}
+```
+
+9. app wrapup
+
+```js
+import { User } from './User';
+import {Company} from './Company';
+import {customMap} from './CustomMap.ts';
+
+const user = new User();
+const company = new Company();
+const customMap = new CustomMap('map');
+
+customMap.addMarker(user);
+customMap.addMarker(company);
+```
+
+
