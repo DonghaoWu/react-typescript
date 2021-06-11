@@ -26,6 +26,7 @@ $ npm i -g typescript ts-node
 7. install prettier extention
 
     - run prettier on save
+    - code => prefences => setting => search: `default formatter`
     - code => prefences => setting => search: format on save => check that( run prettier on save) 
 
 8. Use single quotes with prettier

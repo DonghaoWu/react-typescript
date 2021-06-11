@@ -4,6 +4,7 @@
 $ npm i -g typescript ts-node
 $ npx create-react-app my-app --template typescript
 ```
+- link:(https://create-react-app.dev/docs/adding-typescript/)[https://create-react-app.dev/docs/adding-typescript/]
 
 2. .ts / .tsx
 
