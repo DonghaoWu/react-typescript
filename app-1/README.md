@@ -50,10 +50,10 @@ $ npx create-react-app <app-name> --template typescript
 4. Basic compile commands.
 
 ```bash
-$ tsc index.ts # compile and get a new index.js file
+$ tsc index.tsx # compile and get a new index.js file
 $ node.index.js
 
-$ ts-node index.ts # one line command
+$ ts-node index.tsx # one line command
 ```
 
 #### `Comment:`
@@ -66,7 +66,7 @@ $ ts-node index.ts # one line command
 
 - index.tsx
 
-```tsx
+```ts
 import ReactDOM from 'react-dom';
 import './styles.css';
 import Parent from './Components/FC_parent-child/Parent';
@@ -119,7 +119,7 @@ ReactDOM.render(<App />, document.querySelector('#root'));
 
 1. ./src/Components/FC_parent-child/Parent.tsx
 
-```tsx
+```ts
 import { ChildAsFC } from './Child';
 
 const Parent = () => {
@@ -135,7 +135,7 @@ export default Parent;
 
 2. ./src/Components/FC_parent-child/Parent.tsx
 
-```tsx
+```ts
 interface ChildProps {
   color: string;
   handleClick: () => void;
@@ -184,7 +184,7 @@ export const ChildAsFC: React.FC<ChildProps> = ({})
 
 1. ./src/Components/FC_react-hook/GuestList.tsx
 
-```tsx
+```ts
 import { useState } from 'react';
 
 export const GuestList: React.FC = () => {
@@ -221,7 +221,7 @@ export default GuestList;
 
 2. ./src/Components/FC_react-hook/UserSearch.tsx
 
-```tsx
+```ts
 import { useState } from 'react';
 
 const users = [
@@ -269,7 +269,7 @@ export default UserSearch;
 
 3. ./src/Components/FC_react-ref/UserSearch-ref.tsx
 
-```tsx
+```ts
 import { useState, useRef, useEffect } from 'react';
 
 const users = [
@@ -324,7 +324,7 @@ export default UserSearchRef;
 
 1. 常见类型定义：
 
-```tsx
+```ts
 // useState 数组
 const [guests, setGuests] = useState<string[]>([]);
 
@@ -339,7 +339,7 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 2. 关于 ref 的用法：
 
-```tsx
+```ts
 import { useRef, useEffect } from 'react';
 
 const [name, setName] = useState('');
@@ -409,9 +409,9 @@ useEffect(() => {
 
 - #### Click here: [BACK TO CONTENT](#1.0)
 
-- index.tsx
+- ./src/Components/CC_state/UserSearchCC.tsx
 
-```tsx
+```ts
 import { Component } from 'react';
 
 interface User {
@@ -473,7 +473,7 @@ export default UserSearchCC;
 
 1. interface 的嵌套使用
 
-```tsx
+```ts
 interface User {
   name: string;
   age: number;
@@ -491,7 +491,7 @@ interface UserSearchState {
 
 2. state 的 interface 的引用
 
-```tsx
+```js
 state: UserSearchState = {
   name: '',
   user: undefined,
@@ -500,7 +500,7 @@ state: UserSearchState = {
 
 3. class component 接受参数
 
-```tsx
+```ts
 class UserSearchCC extends Component<UserSearchProps> {}
 ```
 
