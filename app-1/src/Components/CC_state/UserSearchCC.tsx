@@ -40,15 +40,12 @@ class UserSearchCC extends Component<UserSearchProps> {
         />
         <button onClick={this.onClick}>Find User</button>
         <div>
-          {
-            user ?
-              <div>
-                <p>User name:{user.name}</p>
-                <p>User age:{user.age}</p>
-              </div>
-              :
-              null
-          }
+          {user ? (
+            <div>
+              <p>User name:{user.name}</p>
+              <p>User age:{user.age}</p>
+            </div>
+          ) : null}
         </div>
       </div>
     );

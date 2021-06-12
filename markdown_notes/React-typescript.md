@@ -1,4 +1,5 @@
-1. 
+1.
+
 ```bash
 $ npx create-react-app <app-name> --template typescript
 ```
@@ -19,27 +20,27 @@ $ npm i -g typescript ts-node
 
 6. install code to path
 
-    - view => command pallete => install path
-    - code .
-    - 
+   - view => command pallete => install path
+   - code .
+   -
 
 7. install prettier extention
 
-    - run prettier on save
-    - code => prefences => setting => search: `default formatter`
-    - code => prefences => setting => search: format on save => check that( run prettier on save) 
+   - run prettier on save
+   - code => prefences => setting => search: `default formatter`
+   - code => prefences => setting => search: format on save => check that( run prettier on save)
 
 8. Use single quotes with prettier
 
-    - code => prefences => setting => search: single quotes => Prettier: single quote => check that
+   - code => prefences => setting => search: single quotes => Prettier: single quote => check that
 
 9. Use two spaces for indentation
 
-    - code => prefences => setting => search: tab size => 2
+   - code => prefences => setting => search: tab size => 2
 
 10. Change theme
 
-    - prefences => setting => search: theme => color theme => 
+    - prefences => setting => search: theme => color theme =>
 
 11. make a network request to fetch some JSON and print the result
 
@@ -48,7 +49,6 @@ $ npm i -g typescript ts-node
 ```bash
 $ npm init -y
 $ npm i axios
-$ 
 ```
 
 13. execute typescript code
@@ -62,29 +62,29 @@ $
 
     // 这是一个 obj，且里面以这些 key 的值为这些类型。
 
-    interface Todo{
-        id:number;
-        title:string;
-        completed:boolean;
+    interface Todo {
+      id: number;
+      title: string;
+      completed: boolean;
     }
 
-    axios.get(url)
-    .then(res=>{
-        const todo = res.data as Todo; // typeScript
+    axios.get(url).then((res) => {
+      const todo = res.data as Todo; // typeScript
 
-        const {id, title, completed} = todo;
+      const { id, title, completed } = todo;
 
-        logTodo(id, title, completed);
+      logTodo(id, title, completed);
     });
 
-    const logTodo = (id: number, title: string, completed: boolean)=>{// TS
+    const logTodo = (id: number, title: string, completed: boolean) => {
+      // TS
 
-        console.log(`
+      console.log(`
             The Todo with id: ${id},
             Has a title of: ${title},
             Is it finished? ${completed}
-        `)
-    }
+        `);
+    };
     ```
 
     - silent error like undefined error.
@@ -104,17 +104,16 @@ $
     - primitive types & object types
 
     - example
+
 ```ts
 const today = new Date();
 today.getMonth();
 
-const person={
-    age:20
+const person = {
+  age: 20,
 };
 
-class Color{
-
-}
+class Color {}
 
 const red = new Color();
 
@@ -129,31 +128,29 @@ red.hey;
 ```ts
 const apples: number = 5;
 let speed: string = 'fast';
-let hasName:boolean = true;
+let hasName: boolean = true;
 
 let nothingMuch: null = null;
 let nothing: undefined = undefined;
 let now: Date = new Date();
 
-let colors: string[] = ['red','green', 'blue'];
-let myNumbers: number[] = [1,2,3];
+let colors: string[] = ['red', 'green', 'blue'];
+let myNumbers: number[] = [1, 2, 3];
 let truths: boolean[] = [true, false];
 
-class Car{
-
-}
-let car:Car = new Car();
+class Car {}
+let car: Car = new Car();
 
 // object literal
-let point: { x: string; y:number;} = {
-    x:'hello',
-    y:20
-}
+let point: { x: string; y: number } = {
+  x: 'hello',
+  y: 20,
+};
 
 // function
-const logNumber:(i: number) => void = (i: number) =>{
-    console.log(i);
-}
+const logNumber: (i: number) => void = (i: number) => {
+  console.log(i);
+};
 ```
 
 17. inference
@@ -181,9 +178,10 @@ const logNumber:(i: number) => void = (i: number) =>{
 1. type annotations & type inference
 
 2. when to use annotations:
-    - function that returns the 'any' type
+   - function that returns the 'any' type
+
 ```js
-const json = {'x':10, 'y':20};
+const json = { x: 10, y: 20 };
 const cordinates = JSON.parse(json);
 
 console.log(coordinates);
@@ -191,37 +189,45 @@ console.log(coordinates);
 
 6/4:
 
-1. 
+1.
 
 6/5:
+
 - 以下是关于使用 annotation 的场景。
+
 1. Fix the 'Any' type.
+
 - JSON.parse canr return any data type.
+
 ```js
-const json = {'x':10, 'y':20};
-const cordinates:{x:number;y:number} = JSON.parse(json);
+const json = { x: 10, y: 20 };
+const cordinates: { x: number, y: number } = JSON.parse(json);
 
 console.log(coordinates);
 ```
 
 2. Delayed initialization
-- when we declare a variabel on one line and initalizate it later.
-```js
-let words = ['red', 'green','blue'];
-// let foundWord = false;
-let foundWord:boolean;
 
-for(let i = 0; i < words.length; i++){
-    if(words[i] === 'green'){
-        foundWord = true;
-    }
+- when we declare a variabel on one line and initalizate it later.
+
+```js
+let words = ['red', 'green', 'blue'];
+// let foundWord = false;
+let foundWord: boolean;
+
+for (let i = 0; i < words.length; i++) {
+  if (words[i] === 'green') {
+    foundWord = true;
+  }
 }
 ```
 
 - 最好的办法是直接定义为 false，这样 typeScript 就直接知道定义的数据类型。
 
 3. WHen inference doesn't work
+
 - variable whose type cannot be inferrend correctly.
+
 ```js
 let numbers =[-10, -1, 12];
 // if one number is positve, set the number, if not, set false, bad practise.
@@ -240,89 +246,97 @@ for(let i = 0; i M numbers.length; i++){
 4. function - type annotation for functions.
 
 ```js
-const logNumber:(i:number) =>void = (i: number)=>{
-    console.log(i);
+const logNumber: (i: number) => void = (i: number) => {
+  console.log(i);
 };
 ```
 
 - `always add argument type.`
+
 ```js
 // type annotation
 // best parctise, always add return annotation.
-const add = (a:number, b: number) : number =>{
-    return a + b;
-}
+const add = (a: number, b: number): number => {
+  return a + b;
+};
 
 // bad practise
-const add = (a:number, b: number) =>{
-    return a + b;
-}
+const add = (a: number, b: number) => {
+  return a + b;
+};
 ```
 
 ```js
-function divide(a: number, b: number): number{
-    return a/b;
+function divide(a: number, b: number): number {
+  return a / b;
 }
 
-const mutiply = function(a:number, b:number): number{
-    return a * b;
-}
+const mutiply = function (a: number, b: number): number {
+  return a * b;
+};
 ```
 
 ```js
-const logger = (message:string): void =>{
-    console.log(message);
-    return null;
-}
+const logger = (message: string): void => {
+  console.log(message);
+  return null;
+};
 
-const throwError = (message:string): never =>{
-    throw new Error(message);
-}
+const throwError = (message: string): never => {
+  throw new Error(message);
+};
 ```
 
 ```js
 const forcast = {
-    date:new Date(),
-    weather:'sunny'
-}
+  date: new Date(),
+  weather: 'sunny',
+};
 
-const logWeather = (forcast:{ date: Date, weather:string}):void =>{
-    console.log(forcast.date);
-    console.log(forcast.weather);
-}
+const logWeather = (forcast: { date: Date, weather: string }): void => {
+  console.log(forcast.date);
+  console.log(forcast.weather);
+};
 
 logWeather(forcast);
 
 // typeScript destructuring
-const logWeather = ({date, weather} :{date: Date, weather:string}): void =>{
-    console.log(date);
-    console.log(weather);
-}
+const logWeather = ({
+  date,
+  weather,
+}: {
+  date: Date,
+  weather: string,
+}): void => {
+  console.log(date);
+  console.log(weather);
+};
 ```
 
 - type infernce for functions - typeScript tries to figure out what type of `value a function will return.`
 
-
 - Annotation around Objects
 
 ```js
-const profile={
-    name:'alex',
-    age:20,
-    coords:{
-        lat:0,
-        lng:15
-    },
-    setAge(age: number): void{
-        this.age = age;
-    }
+const profile = {
+  name: 'alex',
+  age: 20,
+  coords: {
+    lat: 0,
+    lng: 15,
+  },
+  setAge(age: number): void {
+    this.age = age;
+  },
 };
 
-const {age}:{age:number} = profile;
+const { age }: { age: number } = profile;
 
-const {age, name}:{age:number; name:string} = profile;
+const { age, name }: { age: number, name: string } = profile;
 
-const {coords:{lat, lng}}:{coords:{lat:number; lng:number}} = profile;
+const {
+  coords: { lat, lng },
+}: { coords: { lat: number, lng: number } } = profile;
 ```
 
 5. array in TyprScript
@@ -336,14 +350,11 @@ const dates = [new Date(), new Date()];
 
 // annotation 一般用在未有值的定义层面上
 const carsByMake: string[][] = [];
-const carsByMake = [
-    ['f150'],
-    ['corolla'],
-    ['camaro']
-]
+const carsByMake = [['f150'], ['corolla'], ['camaro']];
 ```
 
 - why typeScript in array
+
 ```js
 // Help with inference when extractiong values
 const car = carMakers[0];
@@ -353,37 +364,40 @@ const myCar = carMakers.pop();
 carMakers.push(100);
 
 // Help with 'map'
-carMakers.map((car:string):string =>{
-    return car;
-})
+carMakers.map((car: string): string => {
+  return car;
+});
 
 // Mutiple types in array
-const importantDates :(Date | string)[] = [];
+const importantDates: (Date | string)[] = [];
 importantDates.push('2021');
 const importantDates = [new Date(), '2020'];
 ```
 
 - when to use types Arrays
+
 ```js
 
 ```
 
 6. tuples in action, set up the type order in an array.
+
 ```js
 const drink = {
-    color:'brown',
-    carbonated: true,
-    sugar:40
-}
+  color: 'brown',
+  carbonated: true,
+  sugar: 40,
+};
 
-const pepsi:[string, boolean, number] = ['brown', true, 40];
+const pepsi: [string, boolean, number] = ['brown', true, 40];
 
 // best practise
 type Drink = [string, boolean, number];
-const pepsi:Drink = ['brown', true, 40];
+const pepsi: Drink = ['brown', true, 40];
 ```
 
 - why tuples?( not used too often.)
+
 ```js
 const car :[number, number] =[400, 401];
 
@@ -394,40 +408,45 @@ const catStates = {
 ```
 
 7. interfaces, `not inference`
+
 - interfaces + classes
 - how we get really strong code reuse in TS
 - long type annotations
 
 ```js
 const oldCivic = {
-    name:'civic',
-    year:2000,
-    broken:true
+  name: 'civic',
+  year: 2000,
+  broken: true,
 };
 
-const printVehicle = (vehicle: { name: string; year:number; broken:boolean}):void =>{
-    console.log(`Name:${vehicle.name}`);
-}
+const printVehicle = (vehicle: {
+  name: string,
+  year: number,
+  broken: boolean,
+}): void => {
+  console.log(`Name:${vehicle.name}`);
+};
 
 printVehicle(oldCivic);
 ```
 
 ```js
-interface Vehicle{
-    name:string;
-    year:number;
-    broken:boolean;
+interface Vehicle {
+  name: string;
+  year: number;
+  broken: boolean;
 }
 
 const oldCivic = {
-    name:'civic',
-    year:2000,
-    broken:true
+  name: 'civic',
+  year: 2000,
+  broken: true,
 };
 
-const printVehicle = (vehicle: Vehicle):void =>{
-    console.log(`Name:${vehicle.name}`);
-}
+const printVehicle = (vehicle: Vehicle): void => {
+  console.log(`Name:${vehicle.name}`);
+};
 
 printVehicle(oldCivic);
 ```
@@ -437,24 +456,24 @@ printVehicle(oldCivic);
 - interface syntax
 
 ```js
-interface Vehicle{
-    name:string;
-    year:number;
-    broken:boolean;
-    summary():string;
+interface Vehicle {
+  name: string;
+  year: number;
+  broken: boolean;
+  summary(): string;
 }
 
 const oldCivic = {
-    name:'civic',
-    year:2000,
-    broken:true,
-    summary():string{
-        return `${this.name}`;
-    }
+  name: 'civic',
+  year: 2000,
+  broken: true,
+  summary(): string {
+    return `${this.name}`;
+  },
 };
 
-const printVehicle = (vehicle: Vehicle):void =>{
-    console.log(vehicle.summary());
+const printVehicle = (vehicle: Vehicle): void => {
+  console.log(vehicle.summary());
 };
 
 printVehicle(oldCivic);
@@ -463,21 +482,21 @@ printVehicle(oldCivic);
 - functions in interfaces / 输入的 Vehicle 没有全部 key, 这样 printVehicle 的输入 object 只需要符合就可以了。`部分合规也是允许的。`
 
 ```js
-interface Reportable{
-    summary():string;
+interface Reportable {
+  summary(): string;
 }
 
 const oldCivic = {
-    name:'civic',
-    year:2000,
-    broken:true,
-    summary():string{
-        return `${this.name}`;
-    }
+  name: 'civic',
+  year: 2000,
+  broken: true,
+  summary(): string {
+    return `${this.name}`;
+  },
 };
 
-const printVehicle = (vehicle: Reportable):void =>{
-    console.log(vehicle.summary());
+const printVehicle = (vehicle: Reportable): void => {
+  console.log(vehicle.summary());
 };
 
 printVehicle(oldCivic);
@@ -486,30 +505,30 @@ printVehicle(oldCivic);
 - code reuse with interfaces.
 
 ```js
-interface Reportable{
-    summary():string;
+interface Reportable {
+  summary(): string;
 }
 
 const oldCivic = {
-    name:'civic',
-    year:2000,
-    broken:true,
-    summary():string{
-        return `${this.name}`;
-    }
+  name: 'civic',
+  year: 2000,
+  broken: true,
+  summary(): string {
+    return `${this.name}`;
+  },
 };
 
 const drink = {
-    color:'brown',
-    carbonated:true,
-    sugar:40,
-    summary():string{
-        return `My drink has ${this.sugar} grams of sugar.`;
-    }
-}
+  color: 'brown',
+  carbonated: true,
+  sugar: 40,
+  summary(): string {
+    return `My drink has ${this.sugar} grams of sugar.`;
+  },
+};
 
-const printSummary = (item: Reportable):void =>{
-    console.log(item.summary());
+const printSummary = (item: Reportable): void => {
+  console.log(item.summary());
 };
 
 printSummary(oldCivic);
@@ -517,11 +536,13 @@ printSummary(drink);
 ```
 
 - general plan with interfaces
+
 ```js
 // reuse interface.
 ```
 
 8. classes
+
 - class, blueprint to create an object
 
 - public / private / protected.`modifier`
@@ -580,6 +601,7 @@ console.log(vehicle.color);
 ```
 
 - fields with inheritance
+
 ```js
 class Vehicle{
     //shortcut
@@ -615,24 +637,27 @@ const car = new Car(4,'red');
 $ npm install -g parcel-bundler
 $ mkdir maps
 $ cd maps
-$ 
+$
 ```
 
 - index.html
+
 ```html
 <html>
-    <body>
-        <script src='./src/index.ts'></script>
-    </body>
+  <body>
+    <script src="./src/index.ts"></script>
+  </body>
 </html>
 ```
 
 - src folder/index.ts
+
 ```js
 console.log('hello world');
 ```
 
 - build command
+
 ```bash
 $ parcel index.html
 ```
@@ -640,6 +665,7 @@ $ parcel index.html
 - open localhost:1234
 
 - project structure
+
 ```diff
 + src/index.ts
 + index.html
@@ -649,61 +675,65 @@ $ parcel index.html
 ```
 
 - install faker
+
 ```bash
 $ npm i faker @types/faker
 ```
 
 - src/User.ts
+
 ```js
 //Type definition file
 import faker from 'faker';
 
 // never use default export
-export class User{
-    name:string;
-    location:{
-        lat:number;
-        lng:number;
-    }
+export class User {
+  name: string;
+  location: {
+    lat: number,
+    lng: number,
+  };
 
-    constructor(){
-        this.name = faker.name.firstName();
-        this.location = {
-            lat:parseFloat(faker.address.latitude()),
-            lng:parseFloat(faker.address.longitude())
-        };
-    }
+  constructor() {
+    this.name = faker.name.firstName();
+    this.location = {
+      lat: parseFloat(faker.address.latitude()),
+      lng: parseFloat(faker.address.longitude()),
+    };
+  }
 }
 ```
 
 - src/Company.ts
+
 ```js
 import faker from 'faker';
 
-export class Company{
-    companyName:string;
-    catchPhrase:string;
-    location:{
-        lat:number;
-        lng:number;
-    }
+export class Company {
+  companyName: string;
+  catchPhrase: string;
+  location: {
+    lat: number,
+    lng: number,
+  };
 
-    constructor(){
-        this.companyName = faker.company.companyName();
-        this.catchPhrase = faker.company.catchPhrase();
+  constructor() {
+    this.companyName = faker.company.companyName();
+    this.catchPhrase = faker.company.catchPhrase();
 
-        this.location = {
-            lat:parseFloat(faker.address.latitude()),
-            lng:parseFloat(faker.address.longitude())
-        };
-    }
+    this.location = {
+      lat: parseFloat(faker.address.latitude()),
+      lng: parseFloat(faker.address.longitude()),
+    };
+  }
 }
 ```
 
 - src/index.ts
+
 ```js
 import { User } from './User';
-import {COmpany} from './Company';
+import { COmpany } from './Company';
 
 const user = new User();
 console.log(user);
@@ -712,20 +742,21 @@ const company = new Company();
 console.log(company);
 ```
 
-
 - src/Map.js
+
 1. generate a google dev project
 2. enable google Maps support(`Maps JS API`)
 3. Generate an API key(credentials => API keys)
 4. Add the google maps script to HTML file
 
 - index.html
+
 ```html
 <html>
-    <body>
-        <script src="https:maps.googlapis.com/maps/api/js?key=adadfhaldkadsfj"></script>
-        <script src='./src/index.ts'></script>
-    </body>
+  <body>
+    <script src="https:maps.googlapis.com/maps/api/js?key=adadfhaldkadsfj"></script>
+    <script src="./src/index.ts"></script>
+  </body>
 </html>
 ```
 
@@ -736,9 +767,10 @@ $ npm i @types/googlemaps
 ```
 
 - src/index.ts
+
 ```js
 import { User } from './User';
-import {Company} from './Company';
+import { Company } from './Company';
 
 const user = new User();
 console.log(user);
@@ -746,7 +778,7 @@ console.log(user);
 const company = new Company();
 console.log(company);
 
-google
+google;
 ```
 
 6/6:
@@ -754,30 +786,33 @@ google
 1. type defination files
 
 - index.html
+
 ```html
 <html>
-    <body>
-        <div id='map' style='height:100%;'></div>
-        <script src="https:maps.googlapis.com/maps/api/js?key=adadfhaldkadsfj"></script>
-        <script src='./src/index.ts'></script>
-    </body>
+  <body>
+    <div id="map" style="height:100%;"></div>
+    <script src="https:maps.googlapis.com/maps/api/js?key=adadfhaldkadsfj"></script>
+    <script src="./src/index.ts"></script>
+  </body>
 </html>
 ```
 
 - src/index.ts
+
 ```js
-new google.maps.Map(document.getElementById('map'),{
-    zoom:1,
-    center:{
-        lat:0,
-        lng:0
-    }
+new google.maps.Map(document.getElementById('map'), {
+  zoom: 1,
+  center: {
+    lat: 0,
+    lng: 0,
+  },
 });
 ```
 
 2. hide functionality
 
 - src/CustomMap.ts
+
 ```js
 export class CustomMap{
     private googleMap:google.maps.Map;
@@ -795,10 +830,11 @@ export class CustomMap{
 ```
 
 - src/index.ts
+
 ```js
 import { User } from './User';
-import {Company} from './Company';
-import {customMap} from './CustomMap.ts';
+import { Company } from './Company';
+import { customMap } from './CustomMap.ts';
 
 new CustomMap('map');
 ```
@@ -845,10 +881,11 @@ export class CustomMap{
 ```
 
 - src/index.ts
+
 ```js
 import { User } from './User';
-import {Company} from './Company';
-import {customMap} from './CustomMap.ts';
+import { Company } from './Company';
+import { customMap } from './CustomMap.ts';
 
 const user = new User();
 const company = new Company();
@@ -890,6 +927,7 @@ export class CustomMap{
 ```
 
 5. restricting access with interfaces
+
 ```js
 // Instructions to every other class
 // on how they can be an argument to 'addMarker'
@@ -924,6 +962,7 @@ export class CustomMap{
     };
 }
 ```
+
 - new terms: `satisfy the interface.`
 - implicit type checks
 
@@ -931,8 +970,8 @@ export class CustomMap{
 
 ```js
 import { User } from './User';
-import {Company} from './Company';
-import {customMap} from './CustomMap.ts';
+import { Company } from './Company';
+import { customMap } from './CustomMap.ts';
 
 const user = new User();
 const company = new Company();
@@ -988,6 +1027,7 @@ export class CustomMap{
 7. updating interface definitions
 
 - CustomMap.js
+
 ```js
 interface Mappable{
     location:{
@@ -1031,84 +1071,87 @@ export class CustomMap{
 ```
 
 - User.ts
+
 ```js
 //Type definition file
 import faker from 'faker';
 
 // never use default export
-export class User{
-    name:string;
-    location:{
-        lat:number;
-        lng:number;
-    }
+export class User {
+  name: string;
+  location: {
+    lat: number,
+    lng: number,
+  };
 
-    constructor(){
-        this.name = faker.name.firstName();
-        this.location = {
-            lat:parseFloat(faker.address.latitude()),
-            lng:parseFloat(faker.address.longitude())
-        };
-    }
+  constructor() {
+    this.name = faker.name.firstName();
+    this.location = {
+      lat: parseFloat(faker.address.latitude()),
+      lng: parseFloat(faker.address.longitude()),
+    };
+  }
 
-    markerContent():string{
-        return `User name: ${this.name}`;
-    }
+  markerContent(): string {
+    return `User name: ${this.name}`;
+  }
 }
 ```
 
 - Company.ts
+
 ```js
 import faker from 'faker';
 
-export class Company{
-    companyName:string;
-    catchPhrase:string;
-    location:{
-        lat:number;
-        lng:number;
-    }
+export class Company {
+  companyName: string;
+  catchPhrase: string;
+  location: {
+    lat: number,
+    lng: number,
+  };
 
-    constructor(){
-        this.companyName = faker.company.companyName();
-        this.catchPhrase = faker.company.catchPhrase();
+  constructor() {
+    this.companyName = faker.company.companyName();
+    this.catchPhrase = faker.company.catchPhrase();
 
-        this.location = {
-            lat:parseFloat(faker.address.latitude()),
-            lng:parseFloat(faker.address.longitude())
-        };
-    }
+    this.location = {
+      lat: parseFloat(faker.address.latitude()),
+      lng: parseFloat(faker.address.longitude()),
+    };
+  }
 
-    markerContent():string{
-        return `
+  markerContent(): string {
+    return `
         <div>
             <h1>Company name: ${this.companyName}</h1>
         </div>
         `;
-    };
+  }
 }
 ```
 
 8. Optional inplements clauses
+
 ```js
-export interface Mappable{
-    location:{
-        lat:number;
-        lng:number;
-    };
-    markerContent():string;
+export interface Mappable {
+  location: {
+    lat: number,
+    lng: number,
+  };
+  markerContent(): string;
 }
 ```
 
 ```js
-import {Mappable} from './CustomMap';
+import { Mappable } from './CustomMap';
 
-export class User implements Mappable{
-    name:string;
-    location:{
-        lat:number;
-        lng:number;
-    }
+export class User implements Mappable {
+  name: string;
+  location: {
+    lat: number,
+    lng: number,
+  };
 }
 ```
 
@@ -1116,8 +1159,8 @@ export class User implements Mappable{
 
 ```js
 import { User } from './User';
-import {Company} from './Company';
-import {customMap} from './CustomMap.ts';
+import { Company } from './Company';
+import { customMap } from './CustomMap.ts';
 
 const user = new User();
 const company = new Company();
@@ -1126,5 +1169,3 @@ const customMap = new CustomMap('map');
 customMap.addMarker(user);
 customMap.addMarker(company);
 ```
-
-
