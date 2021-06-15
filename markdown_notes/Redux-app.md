@@ -205,9 +205,6 @@ ReactDOM.render(<App />, document.querySelector('#root'));
 
 ```ts
 import { useState } from 'react';
-// import { useDispatch } from 'react-redux';
-// import { actionCreators } from '../state';
-// import { useSelector } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useActions } from '../hooks/useActions';
 
@@ -215,15 +212,10 @@ const RepositoriesList: React.FC = () => {
   const [term, setTerm] = useState('');
   const { searchRepos } = useActions();
 
-  const { data, error, loading } = useTypedSelector(
-    (state: any) => state.repos
-  );
-  //   const dispatch = useDispatch();
+  const { data, error, loading } = useTypedSelector((state) => state.repos);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // dispatch(actionCreators.searchRepos(term));
     searchRepos(term);
   };
 
@@ -235,7 +227,45 @@ const RepositoriesList: React.FC = () => {
       </form>
       {error && <h3>{error}</h3>}
       {loading && <h3>Loading...</h3>}
-      {!error && !loading && data.map((el) => <div key={el}>{el}</div>)}
+      {!error && !loading && data.map((name) => <li key={name}>{name}</li>)}
+    </div>
+  );
+};
+
+export default RepositoriesList;
+```
+
+---
+
+- js 版本
+
+```jsx
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { actionCreators } from '../redux';
+
+const RepositoriesList = () => {
+  const [term, setTerm] = useState('');
+
+  const { data, error, loading } = useSelector((state) => state.repos);
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(actionCreators.searchRepos(term));
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input value={term} onChange={(e) => setTerm(e.target.value)} />
+        <button>Search</button>
+      </form>
+      {error && <h3>{error}</h3>}
+      {loading && <h3>Loading...</h3>}
+      {!error && !loading && data.map((el) => <li key={el}>{el}</li>)}
     </div>
   );
 };
