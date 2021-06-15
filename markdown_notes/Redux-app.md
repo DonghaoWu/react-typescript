@@ -12,7 +12,7 @@ $ npm i react-redux @types/react-redux axios  redux redux-thunk
 
 4. reducer
 
-- ./src/state/repoReducer.ts
+- ./src/redux/reducers/repoReducer.ts
 
 ```js
 import { ActionType } from '../action-types';
@@ -55,7 +55,7 @@ export default reducer;
 
 5. actions
 
-- ./src/actions/index.ts
+- ./src/redux/actions/index.ts
 
 ```ts
 import { ActionType } from '../action-types';
@@ -82,7 +82,7 @@ export type Action =
 
 6. action types.
 
-- ./src/action-types/index.ts
+- ./src/redux/action-types/index.ts
 
 ```ts
 export enum ActionType {
@@ -94,7 +94,7 @@ export enum ActionType {
 
 7. action creators
 
-- ./src/action-creators/index.ts
+- ./src/redux/action-creators/index.ts
 
 ```ts
 import axios from 'axios';
@@ -138,14 +138,14 @@ export const searchRepos = (terms: string) => {
 
 8. set up reducer index file
 
-- ./src/state/reducers/index.ts
+- ./src/redux/reducers/index.ts
 
 ```ts
 import { combineReducers } from 'redux';
 import reposReducer from './reposReducer';
 
 const reducers = combineReducers({
-  repos: resposReducer,
+  repos: reposReducer,
 });
 
 export default reducers;
@@ -155,7 +155,7 @@ export type RootState = ReturnType<typeof reducers>;
 
 9. store
 
-- ./src/state/store.ts
+- ./src/redux/store.ts
 
 ```ts
 import { createStore, applyMiddleware } from 'redux';
@@ -167,7 +167,7 @@ export const store = createStore(reducers, {}, applyMiddleware(thunk));
 
 10. index.ts
 
-- ./src/state/index.ts
+- ./src/redux/index.ts
 
 ```ts
 export * from './store';
@@ -179,12 +179,13 @@ export * from './reducers';
 
 1. App.tsx
 
-- ./src/Components/index.tsx
+- ./src/index.tsx
 
 ```ts
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { store } from '../state';
-import RepositoriesList from './RepositoriesList';
+import { store } from './redux';
+import RepositoriesList from './Components/RepositoriesList';
 
 const App = () => {
   return (
@@ -197,7 +198,7 @@ const App = () => {
   );
 };
 
-export default App;
+ReactDOM.render(<App />, document.querySelector('#root'));
 ```
 
 - ./src/Components/RepositoriesList.tsx
@@ -247,7 +248,7 @@ export default RepositoriesList;
 ```ts
 import { useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actionCreators } from '../state';
+import { actionCreators } from '../redux';
 
 export const useActions = () => {
   const dispatch = useDispatch();
@@ -259,8 +260,8 @@ export const useActions = () => {
 - ./src/hooks/useTypedSelector.ts
 
 ```ts
-import { useSelector, TypeUseSelectorHook } from 'react-redux';
-import { RootState } from '../state';
+import { useSelector, TypedUseSelectorHook } from 'react-redux';
+import { RootState } from '../redux';
 
-export const useTypedSelector: TypeUseSelectorHook<RootState> = useSelector;
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```

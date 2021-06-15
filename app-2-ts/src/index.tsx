@@ -4,7 +4,6 @@ import { store } from './redux';
 import RepositoriesList from './Components/RepositoriesList';
 
 const App = () => {
-  console.log('hello');
   return (
     <Provider store={store}>
       <div>
