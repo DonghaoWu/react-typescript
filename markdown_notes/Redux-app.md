@@ -3,8 +3,8 @@
 2. library
 
 ```bash
-$ npx creat-react-app redux-app --template typescript
-
+$ npx create-react-app app-2-ts --template typescript
+$ cd app-2-ts
 $ npm i react-redux @types/react-redux axios  redux redux-thunk
 ```
 
@@ -14,29 +14,40 @@ $ npm i react-redux @types/react-redux axios  redux redux-thunk
 
 - ./src/state/repoReducer.ts
 
-```ts
-import {ActionType} from '../action-types';
-import {Action} from '../actions';
+```js
+import { ActionType } from '../action-types';
+import { Action } from '../actions';
 
-interface RepoState{
-    loading:boolean;
-    error:string:null;
-    data:string[];
+interface RepoState {
+  loading: boolean;
+  error: string | null;
+  data: string[];
 }
 
-const reducer = (state:RepoState, action: Action):RepoState => {
-    switch(action.type){
-        default:
-            return state;
-        case ActionType.SEARCH_REPOS:
-            return {loading:true, error: null, data:[]};
-        case ActionType.SEARCH_REPOS_SUCCESS:
-            return {loading:false, error:null, data:action.payload};
-        case ActionType.SEARCH_REPOS_ERROR:
-            return {
-                loading:false, error:action.payload,data:[]
-            };
-    }
+const initialState = {
+  loading: false,
+  error: null,
+  data: [],
+};
+
+const reducer = (
+  state: RepoState = initialState,
+  action: Action
+): RepoState => {
+  switch (action.type) {
+    default:
+      return state;
+    case ActionType.SEARCH_REPOS:
+      return { loading: true, error: null, data: [] };
+    case ActionType.SEARCH_REPOS_SUCCESS:
+      return { loading: false, error: null, data: action.payload };
+    case ActionType.SEARCH_REPOS_ERROR:
+      return {
+        loading: false,
+        error: action.payload,
+        data: [],
+      };
+  }
 };
 
 export default reducer;
@@ -87,7 +98,7 @@ export enum ActionType {
 
 ```ts
 import axios from 'axios';
-import {Dispatch} from 'redux';
+import { Dispatch } from 'redux';
 import { ActionType } from '../action-types';
 import { Action } from '../actions';
 
@@ -102,7 +113,7 @@ export const searchRepos = (terms: string) => {
         'https://registry.npmjs.org/-/v1/search',
         {
           params: {
-            text: term,
+            text: terms,
           },
         }
       );
@@ -112,9 +123,9 @@ export const searchRepos = (terms: string) => {
       });
 
       dispatch({
-          type:type: ActionType.SEARCH_REPOS_SUCCESS,
-          payload:names
-      })
+        type: ActionType.SEARCH_REPOS_SUCCESS,
+        payload: names,
+      });
     } catch (err) {
       dispatch({
         type: ActionType.SEARCH_REPOS_ERROR,
@@ -123,4 +134,133 @@ export const searchRepos = (terms: string) => {
     }
   };
 };
+```
+
+8. set up reducer index file
+
+- ./src/state/reducers/index.ts
+
+```ts
+import { combineReducers } from 'redux';
+import reposReducer from './reposReducer';
+
+const reducers = combineReducers({
+  repos: resposReducer,
+});
+
+export default reducers;
+
+export type RootState = ReturnType<typeof reducers>;
+```
+
+9. store
+
+- ./src/state/store.ts
+
+```ts
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import reducers from './reducers';
+
+export const store = createStore(reducers, {}, applyMiddleware(thunk));
+```
+
+10. index.ts
+
+- ./src/state/index.ts
+
+```ts
+export * from './store';
+export * as actionCreators from './action-creators';
+export * from './reducers';
+```
+
+6/15: React site
+
+1. App.tsx
+
+- ./src/Components/index.tsx
+
+```ts
+import { Provider } from 'react-redux';
+import { store } from '../state';
+import RepositoriesList from './RepositoriesList';
+
+const App = () => {
+  return (
+    <Provider store={store}>
+      <div>
+        <h1> Seach For a Package</h1>
+        <RepositoriesList />
+      </div>
+    </Provider>
+  );
+};
+
+export default App;
+```
+
+- ./src/Components/RepositoriesList.tsx
+
+```ts
+import { useState } from 'react';
+// import { useDispatch } from 'react-redux';
+// import { actionCreators } from '../state';
+// import { useSelector } from 'react-redux';
+import { useTypedSelector } from '../hooks/useTypedSelector';
+import { useActions } from '../hooks/useActions';
+
+const RepositoriesList: React.FC = () => {
+  const [term, setTerm] = useState('');
+  const { searchRepos } = useActions();
+
+  const { data, error, loading } = useTypedSelector(
+    (state: any) => state.repos
+  );
+  //   const dispatch = useDispatch();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // dispatch(actionCreators.searchRepos(term));
+    searchRepos(term);
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input value={term} onChange={(e) => setTerm(e.target.value)} />
+        <button>Search</button>
+      </form>
+      {error && <h3>{error}</h3>}
+      {loading && <h3>Loading...</h3>}
+      {!error && !loading && data.map((el) => <div key={el}>{el}</div>)}
+    </div>
+  );
+};
+
+export default RepositoriesList;
+```
+
+- ./src/hooks/useActions.ts
+
+```ts
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../state';
+
+export const useActions = () => {
+  const dispatch = useDispatch();
+
+  return bindActionCreators(actionCreators, dispatch);
+};
+```
+
+- ./src/hooks/useTypedSelector.ts
+
+```ts
+import { useSelector, TypeUseSelectorHook } from 'react-redux';
+import { RootState } from '../state';
+
+export const useTypedSelector: TypeUseSelectorHook<RootState> = useSelector;
 ```
