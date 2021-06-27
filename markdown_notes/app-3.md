@@ -278,3 +278,288 @@ export const unpkgPathPlugin = () => {
   };
 };
 ```
+
+- 6/27
+
+1. dynamically fetching modules
+
+```js
+import * as esbuild from 'esbuild-wasm';
+import axios from 'axios';
+
+export const unpkgPathPlugin = () => {
+  return {
+    name: 'unpkg-path-plugin',
+    setup(build: esbuild.PluginBuild) {
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log('onResole', args);
+        if (args.path === `index.js`) {
+          return { path: args.path, namespace: 'a' };
+        }
+
+        if (args.path.includes('./') || args.path.includes('../')) {
+          return {
+            namespace: 'a',
+            path: new URL(
+              args.path,
+              'https://unpkg.com' + args.resolverDir + '/'
+            ).href,
+          };
+        }
+        return {
+          namespace: 'a',
+          path: `https://unpkg.com/${args.path}`,
+        };
+        // else if(args.path === 'tiny-test-pkg'){
+        //     return(path:'', namespace:'a')
+        // }
+      });
+
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
+        console.log('onLoad', args);
+
+        if (args.path === 'index.js') {
+          return {
+            loader: 'jsx',
+            contents: `
+              const message = require('react-dom');
+              console.log(message);
+            `,
+            resolveDir: new URL('./', request.responseURl).pathname,
+          };
+        }
+
+        const { data } = await axios.get(args.path);
+        return {
+          loader: 'jsx',
+          contents: data,
+        };
+      });
+    },
+  };
+};
+```
+
+```bash
+$ npm i axios
+```
+
+- defines during bundling
+
+```js
+import * as esbuild from 'esbuild-wasm';
+import ReactDOM from 'react-dom';
+import { useState, useEffect, useRef } from 'react';
+
+import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
+
+const App = () => {
+  const ref = useRef<any>();
+  const [input, setInput] = useState('');
+  const [code, setCode] = useState('');
+
+  const startService = async () => {
+    ref.current = await esbuild.startService({
+      worker: true,
+      wasmURL: '/esbuild.wasm',
+    });
+  };
+
+  useEffect(() => {
+    startService();
+  }, []);
+
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleClick = async () => {
+    if (!ref.current) {
+      return;
+    }
+
+    // const result = await ref.current.transform(input, {
+    //   loader: 'jsx',
+    //   target: 'es2015',
+    // });
+
+    const result = await ref.current.build({
+      entryPoints: ['index.js'],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin()],
+      define:{
+          'process.env.NODE_ENV':'"production"',
+          global:'window'
+      }
+    });
+
+    // console.log(result);
+
+    setCode(result.outputFIles[0].text);
+  };
+
+  return (
+    <h1>
+      <textarea value={input} onChange={handleChange}>
+        {' '}
+      </textarea>
+      <div>
+        <button onClick={handleClick}>Submit</button>
+      </div>
+      <pre>{code}</pre>
+    </h1>
+  );
+};
+
+ReactDOM.render(<App />, document.querySelector('#root'));
+```
+
+- package versioning
+
+```js
+import * as esbuild from 'esbuild-wasm';
+import axios from 'axios';
+
+export const unpkgPathPlugin = () => {
+  return {
+    name: 'unpkg-path-plugin',
+    setup(build: esbuild.PluginBuild) {
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log('onResole', args);
+        if (args.path === `index.js`) {
+          return { path: args.path, namespace: 'a' };
+        }
+
+        if (args.path.includes('./') || args.path.includes('../')) {
+          return {
+            namespace: 'a',
+            path: new URL(
+              args.path,
+              'https://unpkg.com' + args.resolverDir + '/'
+            ).href,
+          };
+        }
+        return {
+          namespace: 'a',
+          path: `https://unpkg.com/${args.path}`,
+        };
+        // else if(args.path === 'tiny-test-pkg'){
+        //     return(path:'', namespace:'a')
+        // }
+      });
+
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
+        console.log('onLoad', args);
+
+        if (args.path === 'index.js') {
+          return {
+            loader: 'jsx',
+            contents: `
+              import React from 'react@16.0.0';
+              console.log(message);
+            `,
+            resolveDir: new URL('./', request.responseURl).pathname,
+          };
+        }
+
+        const { data } = await axios.get(args.path);
+        return {
+          loader: 'jsx',
+          contents: data,
+        };
+      });
+    },
+  };
+};
+```
+
+3. Caching
+
+- localforage, indexDB
+
+```bash
+$ npm i localforage
+```
+
+- implementing a caching layer
+
+```js
+import * as esbuild from 'esbuild-wasm';
+import axios from 'axios';
+import localForage from 'localforage';
+
+const fileCache = localForage.createInstance({
+  name: 'filecache',
+});
+
+// (async () => {
+//   await fileCache.setItem('color', 'red');
+
+//   const color = await fileCache.getItem('color');
+//   console.log(color)
+// })();
+
+export const unpkgPathPlugin = () => {
+  return {
+    name: 'unpkg-path-plugin',
+    setup(build: esbuild.PluginBuild) {
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log('onResole', args);
+        if (args.path === `index.js`) {
+          return { path: args.path, namespace: 'a' };
+        }
+
+        if (args.path.includes('./') || args.path.includes('../')) {
+          return {
+            namespace: 'a',
+            path: new URL(
+              args.path,
+              'https://unpkg.com' + args.resolverDir + '/'
+            ).href,
+          };
+        }
+        return {
+          namespace: 'a',
+          path: `https://unpkg.com/${args.path}`,
+        };
+        // else if(args.path === 'tiny-test-pkg'){
+        //     return(path:'', namespace:'a')
+        // }
+      });
+
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
+        console.log('onLoad', args);
+
+        if (args.path === 'index.js') {
+          return {
+            loader: 'jsx',
+            contents: `
+              import React from 'react@16.0.0';
+              console.log(message);
+            `,
+          };
+        }
+
+        const cachedResult =
+          (await fileCache.getItem) < esbuild.OnLoadResult > args.path;
+
+        if (cachedResult) {
+          return cachedResult;
+        }
+
+        const { data, request } = await axios.get(args.path);
+
+        const result: esbuild.OnLoadResult = {
+          loader: 'jsx',
+          contents: data,
+          resolveDir: new URL('./', request.responseURl).pathname,
+        };
+
+        await fileCache.setItem(args.path, result);
+        return result;
+      });
+    },
+  };
+};
+```
