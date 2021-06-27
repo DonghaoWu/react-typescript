@@ -120,7 +120,8 @@ ReactDOM.render(<App />, document.querySelector('#root'));
 
 14. transpiling => bundling => npm registry
 
-15. 
+15.
+
 ```bash
 $ npm view react dist.tarball
 ```
@@ -132,3 +133,148 @@ $ npm view react dist.tarball
 6/19:
 
     - working on app3
+
+---
+
+6/25:
+
+1. code
+
+```js
+import * as esbuild from 'esbuild-wasm';
+
+export const unpkgPathPlugin = () => {
+  return {
+    name: 'unpkg-path-plugin',
+    setup(build: esbuild.PluginBuild) {
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log('onResole', args);
+        return { path: args.path, namespace: 'a' };
+      });
+
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
+        console.log('onLoad', args);
+
+        if (args.path === 'index.js') {
+          return {
+            loader: 'jsx',
+            contents: `
+              import message from 'tiny-test-pkg';
+              console.log(message);
+            `,
+          };
+        }
+      });
+    },
+  };
+};
+```
+
+2. ESbuild plugin
+
+- ./src/plugins/unpkg-path-plugin
+
+```js
+
+```
+
+- index.tsx
+
+```ts
+import * as esbuild from 'esbuild-wasm';
+import ReactDOM from 'react-dom';
+import { useState, useEffect, useRef } from 'react';
+
+import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
+
+const App = () => {
+  const ref = useRef<any>();
+  const [input, setInput] = useState('');
+  const [code, setCode] = useState('');
+
+  const startService = async () => {
+    ref.current = await esbuild.startService({
+      worker: true,
+      wasmURL: '/esbuild.wasm',
+    });
+  };
+
+  useEffect(() => {
+    startService();
+  }, []);
+
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleClick = async () => {
+    if (!ref.current) {
+      return;
+    }
+
+    // const result = await ref.current.transform(input, {
+    //   loader: 'jsx',
+    //   target: 'es2015',
+    // });
+
+    const result = await ref.current.build({
+      entryPoints: ['index.js'],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin()],
+    });
+
+    // console.log(result);
+
+    setCode(result.outputFIles[0].text);
+  };
+
+  return (
+    <h1>
+      <textarea value={input} onChange={handleChange}>
+        {' '}
+      </textarea>
+      <div>
+        <button onClick={handleClick}>Submit</button>
+      </div>
+      <pre>{code}</pre>
+    </h1>
+  );
+};
+
+ReactDOM.render(<App />, document.querySelector('#root'));
+```
+
+3. Dynamic fetching and loading of NPM modules
+
+-
+
+```ts
+import * as esbuild from 'esbuild-wasm';
+
+export const unpkgPathPlugin = () => {
+  return {
+    name: 'unpkg-path-plugin',
+    setup(build: esbuild.PluginBuild) {
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log('onResole', args);
+        return { path: args.path, namespace: 'a' };
+      });
+
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
+        console.log('onLoad', args);
+
+        if (args.path === 'index.js') {
+          return {
+            loader: 'jsx',
+            contents: `
+              import message from 'tiny-test-pkg';
+              console.log(message);
+            `,
+          };
+        }
+      });
+    },
+  };
+};
+```
