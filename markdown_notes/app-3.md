@@ -563,3 +563,8 @@ export const unpkgPathPlugin = () => {
   };
 };
 ```
+
+
+--- 
+
+6/29 暂停一下，课程内容太复杂，没有太多关于 typeScript，反而很多关于新 technology 的 configuration。
